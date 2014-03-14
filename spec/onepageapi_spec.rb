@@ -5,7 +5,7 @@ api_login = 'xxxx' # put your login details here
 api_pass = 'xxxx' # put your password here
 
 describe OnePageAPISamples do
-  samples = OnePageAPISamples.new(api_url, api_login, api_pass)
+  samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
   it 'checks samples bootstrap' do
