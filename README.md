@@ -1,7 +1,7 @@
 # OnePageCRM Ruby API Client
 
 This is a short ruby script to help you get started with the OnePageCRM API v3.
-It only contains a small subsection of calls and functions available using the API.
+It contains a small subsection of calls and functions available using the API.
 
 ## Getting started
 
