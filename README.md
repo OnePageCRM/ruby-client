@@ -7,7 +7,7 @@ It contains a small subsection of calls and functions available using the API.
 
 - Clone the repository and cd into the directory
 
-- Start irb and require the lib/onpageapi file
+- Start irb and require the lib/onepageapi file
 ```bash
     $ irb
 ```
