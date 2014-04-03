@@ -1,11 +1,11 @@
 require 'onepageapi'
 require 'json_spec'
 
-api_login = 'xxxx' # put your login details here
-api_pass = 'xxxx' # put your password here
+api_login = 'peter@xap.ie' # put your login details here
+api_pass = 'p3t3r3t3p' # put your password here
 
 describe OnePageAPISamples do
-  samples = OnePageAPISamples.new(api_url, api_login, api_pass)
+  samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
   it 'checks samples bootstrap' do
@@ -33,7 +33,9 @@ describe OnePageAPISamples do
       'tags' => %w[api_test1 api_test2],
       'emails' => [{
           'type' => 'work',
-          'value' => 'johnny@exammmple.com' }]
+          'value' => 'johnny@exammmple.com' }],
+      'background' => 'BACKGROUND',
+      'job_title' => 'JOBTITLE'
     })
 
     new_contact = samples.create_contact(new_contact_details)
@@ -55,7 +57,9 @@ describe OnePageAPISamples do
       'tags' => %w[api_test1 api_test2],
       'emails' => [{
           'type' => 'work',
-          'value' => 'johnny@exammmple.com' }]
+          'value' => 'johnny@exammmple.com' }],
+      'background' => '1BACKGROUND',
+      'job_title' => '1JOBTITLE'
     })
     new_contact = samples.create_contact(new_contact_details)
     new_contact_id = new_contact['contact']['id']
@@ -67,7 +71,9 @@ describe OnePageAPISamples do
       'starred' => false,
       'emails' => [{
           'type' => 'work',
-          'value' => 'john@example.com' }]
+          'value' => 'john@example.com' }],
+      'background' => '2BACKGROUND',
+      'job_title' => '2JOBTITLE'
     })
     samples.update_contact(new_contact_id, changed_contact_details)
 
