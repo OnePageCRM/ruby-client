@@ -24,7 +24,7 @@ describe 'OnePageAPISamples' do
     expect { samples.get_contact_details(contact_id) }.to_not raise_error
   end
 
-  it 'should create a new contact' do
+  it 'should create a new contact', pending: true do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
@@ -48,7 +48,7 @@ describe 'OnePageAPISamples' do
     end
   end
 
-  it 'should update a contact' do
+  it 'should update a contact', pending: true do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
@@ -115,9 +115,20 @@ describe ' Test status methods ' do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
+
   it 'should get statuses ', pending: false do 
-    puts samples.get_statuses
+    statuses = samples.get_statuses
+    puts statuses['data']
   end
+
+  it 'should match status names with returned from contats' do
+    contacts = samples.get_contacts_list
+    contacts.each do |contact|
+      puts contact['contact']
+    end
+
+  end
+
 
 end
 

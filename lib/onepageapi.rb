@@ -71,6 +71,11 @@ class OnePageAPISamples
     delete("contacts/#{id}.json")
   end
 
+
+  def get_statuses
+    get('statuses.json')
+  end
+
   # Send GET request
   def get(method, params = {})
     url = URI.parse(@url + method)
