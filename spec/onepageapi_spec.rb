@@ -4,7 +4,7 @@ require 'json_spec'
 api_login = 'peter@xap.ie' # put your login details here
 api_pass = 'p3t3r3t3p' # put your password here
 
-describe OnePageAPISamples do
+describe 'OnePageAPISamples' do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
@@ -106,6 +106,25 @@ describe OnePageAPISamples do
     expect(samples.get_contact_details(new_contact_id)['status']).to be 404
   end
 
+
+
+end
+
+describe ' Test status methods ' do 
+
+  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples.login
+
+  it 'should get statuses ', pending: false do 
+    puts samples.get_statuses
+  end
+
+end
+
+describe 'Test change auth key and logout' do
+
+  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples.login
   it 'should change auth key' do
     orig_auth_key = samples.bootstrap['data']['auth_key']
     samples.change_auth_key
