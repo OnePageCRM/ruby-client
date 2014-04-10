@@ -24,7 +24,7 @@ describe 'OnePageAPISamples' do
     expect { samples.get_contact_details(contact_id) }.to_not raise_error
   end
 
-  it 'should create a new contact', pending: true do
+  it 'should create a new contact', pending: false do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
@@ -48,7 +48,7 @@ describe 'OnePageAPISamples' do
     end
   end
 
-  it 'should update a contact', pending: true do
+  it 'should update a contact', pending: false do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
