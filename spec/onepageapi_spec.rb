@@ -1,11 +1,11 @@
 require 'onepageapi'
 require 'json_spec'
 
-api_login = 'peter@xap.ie' # put your login details here
-api_pass = 'p3t3r3t3p' # put your password here
+api_login = 'xxxx' # put your login details here
+api_pass = 'xxxx' # put your password here
 
-describe 'OnePageAPISamples' do
-  samples = OnePageAPISamples.new(api_login, api_pass)
+describe OnePageAPISamples do
+  samples = OnePageAPISamples.new(api_url, api_login, api_pass)
   samples.login
 
   it 'checks samples bootstrap' do
@@ -24,7 +24,7 @@ describe 'OnePageAPISamples' do
     expect { samples.get_contact_details(contact_id) }.to_not raise_error
   end
 
-  it 'should create a new contact', pending: false do
+  it 'should create a new contact' do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
@@ -48,7 +48,7 @@ describe 'OnePageAPISamples' do
     end
   end
 
-  it 'should update a contact', pending: false do
+  it 'should update a contact' do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
@@ -121,7 +121,7 @@ describe ' Test status methods ' do
     puts statuses['data']
   end
 
-  it 'should match status names with returned from contats' do
+  it 'should match status names with returned from contacts' do
     contacts = samples.get_contacts_list
     contacts.each do |contact|
       puts contact['contact']
