@@ -158,7 +158,7 @@ class OnePageAPISamples
     request_url_hash = Digest::SHA1.hexdigest request_url
     request_body_hash = Digest::SHA1.hexdigest request_body.to_json
     signature_message = [uid, timestamp, request_type.upcase, request_url_hash].join '.'
-    signature_message += ('.' + request_body_hash) unless request_body.empty?
+    signature_message += ('.' + request_body_hash) unless request_body.empty?  || ['GET', 'DELETE'].include?(request_type)
     OpenSSL::HMAC.hexdigest('sha256', api_key, signature_message).to_s
   end
 
