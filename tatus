@@ -1,61 +1,14 @@
-[1mdiff --git a/lib/onepageapi.rb b/lib/onepageapi.rb[m
-[1mindex aa2af02..11f9629 100644[m
-[1m--- a/lib/onepageapi.rb[m
-[1m+++ b/lib/onepageapi.rb[m
-[36m@@ -71,6 +71,11 @@[m [mclass OnePageAPISamples[m
-     delete("contacts/#{id}.json")[m
-   end[m
- [m
-[32m+[m
-[32m+[m[32m  def get_statuses[m
-[32m+[m[32m    get('statuses.json')[m
-[32m+[m[32m  end[m
-[32m+[m
-   # Send GET request[m
-   def get(method, params = {})[m
-     url = URI.parse(@url + method)[m
-[1mdiff --git a/spec/onepageapi_spec.rb b/spec/onepageapi_spec.rb[m
-[1mindex 81ae731..7daf197 100644[m
-[1m--- a/spec/onepageapi_spec.rb[m
-[1m+++ b/spec/onepageapi_spec.rb[m
-[36m@@ -24,7 +24,7 @@[m [mdescribe 'OnePageAPISamples' do[m
-     expect { samples.get_contact_details(contact_id) }.to_not raise_error[m
-   end[m
- [m
-[31m-  it 'should create a new contact' do[m
-[32m+[m[32m  it 'should create a new contact', pending: true do[m
-     new_contact_details = ({[m
-       'first_name' => 'Johnny',[m
-       'last_name' => 'Deer',[m
-[36m@@ -48,7 +48,7 @@[m [mdescribe 'OnePageAPISamples' do[m
-     end[m
-   end[m
- [m
-[31m-  it 'should update a contact' do[m
-[32m+[m[32m  it 'should update a contact', pending: true do[m
-     new_contact_details = ({[m
-       'first_name' => 'Johnny',[m
-       'last_name' => 'Deer',[m
-[36m@@ -115,10 +115,21 @@[m [mdescribe ' Test status methods ' do[m
-   samples = OnePageAPISamples.new(api_login, api_pass)[m
-   samples.login[m
- [m
-[32m+[m
-   it 'should get statuses ', pending: false do [m
-[31m-    puts samples.get_statuses[m
-[32m+[m[32m    statuses = samples.get_statuses[m
-[32m+[m[32m    puts statuses['data'][m
-[32m+[m[32m  end[m
-[32m+[m
-[32m+[m[32m  it 'should match status names with returned from contats' do[m
-[32m+[m[32m    contacts = samples.get_contacts_list[m
-[32m+[m[32m    contacts.each do |contact|[m
-[32m+[m[32m      puts contact['contact'][m
-[32m+[m[32m    end[m
-[32m+[m
-   end[m
- [m
-[32m+[m
- end[m
- [m
- describe 'Test change auth key and logout' do[m
+require './lib/onepageapi'
+
+api_login = 'peter@xap.ie' # put your login details here
+api_pass = 'p3t3r3t3p' # put 
+
+samples = OnePageAPISamples.new(api_login, api_pass)
+samples.login
+samples.upload_image('536b5e861da41710d100000f')
+
+
+pending filter id
+534402b41da41766dc000035
+
+
