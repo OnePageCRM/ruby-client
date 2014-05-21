@@ -106,6 +106,7 @@ class OnePageAPISamples
     req.body = params.to_json
     req.add_field('Content-Type', 'application/json; charset=utf-8')
     add_auth_headers(req, 'POST', method, params)
+
     http = Net::HTTP.new(url.host, url.port)
     # http.use_ssl = true
     result = http.request(req).body
@@ -147,9 +148,9 @@ class OnePageAPISamples
     return if @uid.nil? || @api_key.nil?
 
     url_to_sign = @url + api_method
-    params_to_sign = params.empty? ? nil : 
-    params.to_a.map {|x| x[0] + '=' + URI::escape(x[1].to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
+    params_to_sign = params.empty? ? nil : URI.encode_www_form(params)
     url_to_sign += '?' + params_to_sign unless params_to_sign.nil? || ['POST', 'PUT'].include?(http_method)
+    timestamp = Time.now.to_i.to_s
 
     timestamp = Time.now.to_i.to_s
 
