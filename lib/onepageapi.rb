@@ -27,6 +27,10 @@ class OnePageAPISamples
     @api_key = Base64::decode64(auth_data['data']['auth_key'])
   end
 
+  def return_uid
+    @uid
+  end
+
   def bootstrap
     get('bootstrap.json')
   end
@@ -71,6 +75,10 @@ class OnePageAPISamples
     delete("contacts/#{id}.json")
   end
 
+  def create_action(id, action_data)
+    post("contacts/#{id}/actions.json", action_data)
+  end
+
 
   def get_statuses
     get('statuses.json')
@@ -98,7 +106,6 @@ class OnePageAPISamples
     req.body = params.to_json
     req.add_field('Content-Type', 'application/json; charset=utf-8')
     add_auth_headers(req, 'POST', method, params)
-
     http = Net::HTTP.new(url.host, url.port)
     # http.use_ssl = true
     result = http.request(req).body
