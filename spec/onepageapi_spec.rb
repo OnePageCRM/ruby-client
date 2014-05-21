@@ -24,16 +24,16 @@ describe 'OnePageAPISamples' do
     expect { samples.get_contact_details(contact_id) }.to_not raise_error
   end
 
-  it 'should create a new contact', pending: false do
+  it 'should create a new contact', :pending => true do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
       'company_name' => 'ACMEinc',
       'starred' => true,
-      'tags' => %w[api_test1 api_test2],
+      'tags' => %w(api_test1 api_test2),
       'emails' => [{
-          'type' => 'work',
-          'value' => 'johnny@exammmple.com' }],
+        'type' => 'work',
+        'value' => 'johnny@exammmple.com' }],
       'background' => 'BACKGROUND',
       'job_title' => 'JOBTITLE'
     })
@@ -48,16 +48,16 @@ describe 'OnePageAPISamples' do
     end
   end
 
-  it 'should update a contact', pending: false do
+  it 'should update a contact', :pending => true do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
       'company_name' => 'ACMEinc',
       'starred' => true,
-      'tags' => %w[api_test1 api_test2],
+      'tags' => %w(api_test1 api_test2),
       'emails' => [{
-          'type' => 'work',
-          'value' => 'johnny@exammmple.com' }],
+        'type' => 'work',
+        'value' => 'johnny@exammmple.com' }],
       'background' => '1BACKGROUND',
       'job_title' => '1JOBTITLE'
     })
@@ -132,6 +132,56 @@ describe ' Test status methods ' do
 
 end
 
+
+
+describe 'Test Actions' do
+  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples.login
+  action_id = ''
+  ne_contact_details = ({
+      'first_name' => 'Action',
+      'last_name' => 'Tester',
+      'company_name' => 'ACTION',
+      'starred' => false
+    })
+  ne_contact = samples.create_contact(ne_contact_details)
+  ne_contact_id = ne_contact['contact']['id']
+
+  it 'should create an action' do
+    action = ({ 'contact_id' => ne_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'action_text',
+                'status' => 'asap' })
+
+    created_action = samples.create_action(ne_contact_id, action)
+    action_id = created_action['data']['action']['id']
+    created_action['status'].should be 0
+  end
+
+  it 'should update an action' do
+    action = ({ 'contact_id' => ne_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'updated text',
+                'status' => 'asap' })
+    updated_action = samples.put("actions/#{action_id}.json", action )
+    puts updated_action
+    updated_action['status'].should be 0
+  end
+
+  it 'should complete a next action' do
+    action = ({ 'contact_id' => ne_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'updated text',
+                'status' => 'asap',
+                'done' => true })
+    updated_action = samples.put("actions/#{action_id}.json", action )
+    puts updated_action
+    updated_action['status'].should be 0
+  end
+
+end
+
+
 describe 'Test change auth key and logout' do
 
   samples = OnePageAPISamples.new(api_login, api_pass)
@@ -149,12 +199,12 @@ describe 'Test change auth key and logout' do
 
 end
 
-describe 'Test subuser' do
+describe 'Test subuser', :pending => true do
   sub_login = 'peter+subuser@xap.ie'
   sub_pass = 'p3t3r3t3p'
   samples = OnePageAPISamples.new(sub_login, sub_pass)
   samples.login
-  it 'should create a new user owned by subuser' do
+  it 'should create a new contact owned by subuser' do
     new_contact_details = ({
       'first_name' => 'API',
       'last_name' => 'SUBUSER',
@@ -170,14 +220,14 @@ describe 'Test subuser' do
 
     new_contact = samples.create_contact(new_contact_details)
     new_contact_id = new_contact['contact']['id']
-   
+
     owner_id = samples.get_contact_details(new_contact_id)['data']['contact']['owner_id']
 
     expect(owner_id).to eq(samples.return_uid)
 
   end
 
-  it 'should create a new user owned by owner' do
+  it 'should create a new contact owned by owner' do
 
    new_contact_details = ({
       'first_name' => 'API',
@@ -203,32 +253,4 @@ describe 'Test subuser' do
   end
 end
 
-
-describe 'Test Actions' do
-  samples = OnePageAPISamples.new(api_login, api_pass)
-  samples.login
-
-  new_contact_details = ({
-      'first_name' => 'Action',
-      'last_name' => 'Tester',
-      'company_name' => 'Action Tester',
-      'starred' => true,
-    })
-    new_contact = samples.create_contact(new_contact_details)
-    new_contact_id = new_contact['contact']['id']
-
-  it 'should create an action' do
-    action_details = ({
-      'contact_id' => new_contact_id,
-      'assignee_id' => samples.return_uid,
-      'date' => '2014-05-30',
-      'text' => 'Test Action',
-      'status' => 'date'
-      })
-    action = samples.create_action(new_contact_id, action_details)
-    puts action
-    action['status'].should be 200
-    
-  end
-end
 

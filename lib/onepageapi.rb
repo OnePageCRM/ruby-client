@@ -152,6 +152,7 @@ class OnePageAPISamples
     url_to_sign += '?' + params_to_sign unless params_to_sign.nil? || ['POST', 'PUT'].include?(http_method)
     timestamp = Time.now.to_i.to_s
 
+    # puts url_to_sign
     timestamp = Time.now.to_i.to_s
 
     token = create_signature(@uid, @api_key, timestamp, http_method, url_to_sign, params)
@@ -163,10 +164,17 @@ class OnePageAPISamples
 
 
   def create_signature(uid, api_key, timestamp, request_type, request_url, request_body)
+    # puts uid
+    # # puts api_key
+    # puts timestamp
+    # puts request_type
+    # puts request_url
+    # puts request_body
     request_url_hash = Digest::SHA1.hexdigest request_url
     request_body_hash = Digest::SHA1.hexdigest request_body.to_json
     signature_message = [uid, timestamp, request_type.upcase, request_url_hash].join '.'
     signature_message += ('.' + request_body_hash) unless request_body.empty?
+    # puts signature_message
     OpenSSL::HMAC.hexdigest('sha256', api_key, signature_message).to_s
   end
 
