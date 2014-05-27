@@ -76,6 +76,12 @@ class OnePageAPISamples
     get('statuses.json')
   end
 
+  def contact_photo(id, image_path)
+    encoded_image = Base64.encode64(File.read(image_path))
+    put("contacts/#{id}/contact_photo.json",
+        'image' => encoded_image)
+  end
+
   # Send GET request
   def get(method, params = {})
     url = URI.parse(@url + method)
