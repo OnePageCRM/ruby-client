@@ -4,7 +4,7 @@ require 'json_spec'
 api_login = 'peter+owner@xap.ie' # put your login details here
 api_pass = 'p3t3r3t3p' # put your password here
 
-describe 'OnePageAPISamples' do
+describe 'OnePageAPISamples', :pending => true do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
@@ -110,7 +110,7 @@ describe 'OnePageAPISamples' do
 
 end
 
-describe ' Test status methods ' do 
+describe ' Test status methods ', :pending => true do 
 
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
@@ -134,7 +134,7 @@ end
 
 
 
-describe 'Test Actions' do
+describe 'Test Actions', :pending => false do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
   action_id = ''
@@ -156,6 +156,12 @@ describe 'Test Actions' do
     created_action = samples.create_action(ne_contact_id, action)
     action_id = created_action['data']['action']['id']
     created_action['status'].should be 0
+
+    got_action = samples.get("actions/#{action_id}.json")['data']['action']
+    action.each do |k, v|
+      expect(got_action[k]).to eq(action[k])
+    end
+
   end
 
   it 'should update an action' do
@@ -163,9 +169,14 @@ describe 'Test Actions' do
                 'assignee_id' => samples.return_uid,
                 'text' => 'updated text',
                 'status' => 'asap' })
+    puts action
     updated_action = samples.put("actions/#{action_id}.json", action )
     puts updated_action
     updated_action['status'].should be 0
+    got_action = samples.get("actions/#{action_id}.json")['data']['action']
+    action.each do |k, v|
+      expect(got_action[k]).to eq(action[k])
+    end
   end
 
   it 'should complete a next action' do
@@ -179,6 +190,13 @@ describe 'Test Actions' do
     updated_action['status'].should be 0
   end
 
+  it 'should close the sales cycle' do
+    samples.put("contacts/#{ne_contact_id}/close_sales_action.json")
+    samples.put("contacts/#{ne_contact_id}/star.json")
+    closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
+    closed_contact['sales_closed_for'].should be == [samples.return_uid]
+
+  end
 end
 
 
