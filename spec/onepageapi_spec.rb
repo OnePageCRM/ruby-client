@@ -179,6 +179,15 @@ describe 'Test Actions', :pending => false do
     end
   end
 
+ it 'should not close the sales cycle as there is a N/A' do
+    try_close = samples.put("contacts/#{ne_contact_id}/close_sales_cycle.json", 'comment' => 'close' )
+    closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
+    # puts closed_contact
+    try_close['error_message'].should be == 'Cannot close sales cycle as you have a Next Action for this contact.'
+    closed_contact['sales_closed_for'].should be == []
+
+  end
+
   it 'should complete a next action' do
     action = ({ 'contact_id' => ne_contact_id,
                 'assignee_id' => samples.return_uid,
@@ -186,15 +195,20 @@ describe 'Test Actions', :pending => false do
                 'status' => 'asap',
                 'done' => true })
     updated_action = samples.put("actions/#{action_id}.json", action )
-    puts updated_action
     updated_action['status'].should be 0
   end
 
   it 'should close the sales cycle' do
-    samples.put("contacts/#{ne_contact_id}/close_sales_action.json")
-    samples.put("contacts/#{ne_contact_id}/star.json")
+    samples.put("contacts/#{ne_contact_id}/close_sales_cycle.json", 'comment' => 'close this')
     closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
     closed_contact['sales_closed_for'].should be == [samples.return_uid]
+
+  end
+
+  it 'should reopen the sales cycle' do
+    samples.put("contacts/#{ne_contact_id}/reopen_sales_cycle.json", 'comment' => 'nil' )
+    closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
+    closed_contact['sales_closed_for'].should be == []
 
   end
 end
