@@ -169,7 +169,7 @@ describe 'Test Actions', :pending => false do
                 'assignee_id' => samples.return_uid,
                 'text' => 'updated text',
                 'status' => 'asap' })
-    puts action
+    # puts action
     updated_action = samples.put("actions/#{action_id}.json", action )
     puts updated_action
     updated_action['status'].should be 0
@@ -178,6 +178,13 @@ describe 'Test Actions', :pending => false do
       expect(got_action[k]).to eq(action[k])
     end
   end
+
+  it 'should fail to update NA as json is invalid' do 
+    action = ({ 'contact_id' => ne_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'updated text',
+                'status' => 'asap' })
+    puts action
 
  it 'should not close the sales cycle as there is a N/A' do
     try_close = samples.put("contacts/#{ne_contact_id}/close_sales_cycle.json", 'comment' => 'close' )
@@ -212,6 +219,10 @@ describe 'Test Actions', :pending => false do
 
   end
 end
+
+
+describe 'Test invalid JSON'
+
 
 
 describe 'Test change auth key and logout' do
