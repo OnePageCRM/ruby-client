@@ -4,7 +4,7 @@ require 'json_spec'
 api_login = 'peter+owner@xap.ie' # put your login details here
 api_pass = 'p3t3r3t3p' # put your password here
 
-describe 'OnePageAPISamples', :pending => true do
+describe 'OnePageAPISamples', :pending => false do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
@@ -24,12 +24,12 @@ describe 'OnePageAPISamples', :pending => true do
     expect { samples.get_contact_details(contact_id) }.to_not raise_error
   end
 
-  it 'should create a new contact', :pending => true do
+  it 'should create a new contact', :pending => false do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
       'company_name' => 'ACMEinc',
-      'starred' => true,
+      'starred' => false,
       'tags' => %w(api_test1 api_test2),
       'emails' => [{
         'type' => 'work',
@@ -48,12 +48,12 @@ describe 'OnePageAPISamples', :pending => true do
     end
   end
 
-  it 'should update a contact', :pending => true do
+  it 'should update a contact', :pending => false do
     new_contact_details = ({
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
       'company_name' => 'ACMEinc',
-      'starred' => true,
+      'starred' => false,
       'tags' => %w(api_test1 api_test2),
       'emails' => [{
         'type' => 'work',
@@ -90,7 +90,7 @@ describe 'OnePageAPISamples', :pending => true do
       'first_name' => 'Johnny',
       'last_name' => 'Deer',
       'company_name' => 'ACMEinc',
-      'starred' => true,
+      'starred' => false,
       'tags' => %w[api_test1 api_test2],
       'emails' => [{
           'type' => 'work',
@@ -105,30 +105,26 @@ describe 'OnePageAPISamples', :pending => true do
     samples.delete_contact(new_contact_id)
     expect(samples.get_contact_details(new_contact_id)['status']).to be 404
   end
-
-
-
 end
 
-describe ' Test status methods ', :pending => true do 
+describe ' Test status methods ', :pending => false do 
 
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
 
-  it 'should get statuses ', pending: true do 
+  it 'should get statuses ', pending: false do 
     statuses = samples.get_statuses
     # puts statuses['data']
   end
 
-  it 'should match status names with returned from contats', pending: true do
+  it 'should match status names with returned from contats', pending: false do
     contacts = samples.get_contacts_list
     contacts.each do |contact|
       # puts contact['contact']
     end
 
   end
-
 
 end
 
@@ -161,7 +157,6 @@ describe 'Test Actions', :pending => false do
     action.each do |k, v|
       expect(got_action[k]).to eq(action[k])
     end
-
   end
 
   it 'should update an action' do
@@ -185,12 +180,13 @@ describe 'Test Actions', :pending => false do
                 'text' => 'updated text',
                 'status' => 'asap' })
     puts action
+  end
 
  it 'should not close the sales cycle as there is a N/A' do
     try_close = samples.put("contacts/#{ne_contact_id}/close_sales_cycle.json", 'comment' => 'close' )
     closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
-    # puts closed_contact
-    try_close['error_message'].should be == 'Cannot close sales cycle as you have a Next Action for this contact.'
+    puts closed_contact
+    try_close['error_message'].should be == 'Cannot close sales cycle as you have a Next Action for this contact'
     closed_contact['sales_closed_for'].should be == []
 
   end
@@ -221,28 +217,8 @@ describe 'Test Actions', :pending => false do
 end
 
 
-describe 'Test invalid JSON'
 
-
-
-describe 'Test change auth key and logout' do
-
-  samples = OnePageAPISamples.new(api_login, api_pass)
-  samples.login
-  it 'should change auth key' do
-    orig_auth_key = samples.bootstrap['data']['auth_key']
-    samples.change_auth_key
-    new_auth_key = samples.bootstrap['data']['auth_key']
-    orig_auth_key.should_not be == new_auth_key
-  end
-
-  it 'should log us out' do
-    samples.logout['status'].should == 0
-  end
-
-end
-
-describe 'Test subuser', :pending => true do
+describe 'Test subuser' do
   sub_login = 'peter+subuser@xap.ie'
   sub_pass = 'p3t3r3t3p'
   samples = OnePageAPISamples.new(sub_login, sub_pass)
@@ -295,5 +271,25 @@ describe 'Test subuser', :pending => true do
 
   end
 end
+
+
+
+describe 'Test change auth key and logout' do
+
+  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples.login
+  it 'should change auth key' do
+    orig_auth_key = samples.bootstrap['data']['auth_key']
+    samples.change_auth_key
+    new_auth_key = samples.bootstrap['data']['auth_key']
+    orig_auth_key.should_not be == new_auth_key
+  end
+
+  it 'should log us out' do
+    samples.logout['status'].should == 0
+  end
+
+end
+
 
 
