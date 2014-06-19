@@ -143,7 +143,24 @@ describe 'Test Actions', :pending => false do
   ne_contact = samples.create_contact(ne_contact_details)
   ne_contact_id = ne_contact['contact']['id']
 
-  it 'should create an action' do
+  it 'should create an date action' do
+    action = ({ 'contact_id' => ne_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'action_text',
+                'date' => '2014-06-20',
+                'status' => 'date' })
+
+    created_action = samples.create_action(ne_contact_id, action)
+    action_id = created_action['data']['action']['id']
+    expect(created_action['status']).to be 0
+
+    got_action = samples.get("actions/#{action_id}.json")['data']['action']
+    action.each do |k, v|
+      expect(got_action[k]).to eq(action[k])
+    end
+  end
+
+  it 'should create an asap action' do
     action = ({ 'contact_id' => ne_contact_id,
                 'assignee_id' => samples.return_uid,
                 'text' => 'action_text',
