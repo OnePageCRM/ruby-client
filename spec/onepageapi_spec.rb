@@ -9,9 +9,9 @@ describe 'OnePageAPISamples', :pending => false do
   samples.login
 
   it 'checks samples bootstrap' do
-    samples.bootstrap['status'].should be == 0
-    samples.bootstrap['data']['user']['user']['email'].should be == api_login
-    samples.bootstrap.to_json.should have_json_path('data')
+    expect(samples.bootstrap['status']).to eq(0)
+    expect(samples.bootstrap['data']['user']['user']['email']).to eq(api_login)
+    expect(samples.bootstrap.to_json).to have_json_path('data')
   end
 
   it 'check action_stream' do
@@ -151,7 +151,7 @@ describe 'Test Actions', :pending => false do
 
     created_action = samples.create_action(ne_contact_id, action)
     action_id = created_action['data']['action']['id']
-    created_action['status'].should be 0
+    expect(created_action['status']).to be 0
 
     got_action = samples.get("actions/#{action_id}.json")['data']['action']
     action.each do |k, v|
@@ -167,7 +167,7 @@ describe 'Test Actions', :pending => false do
     # puts action
     updated_action = samples.put("actions/#{action_id}.json", action )
     puts updated_action
-    updated_action['status'].should be 0
+    expect(updated_action['status']).to be 0
     got_action = samples.get("actions/#{action_id}.json")['data']['action']
     action.each do |k, v|
       expect(got_action[k]).to eq(action[k])
@@ -186,8 +186,8 @@ describe 'Test Actions', :pending => false do
     try_close = samples.put("contacts/#{ne_contact_id}/close_sales_cycle.json", 'comment' => 'close' )
     closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
     puts closed_contact
-    try_close['error_message'].should be == 'Cannot close sales cycle as you have a Next Action for this contact'
-    closed_contact['sales_closed_for'].should be == []
+    expect(try_close['error_message']).to eq('Cannot close sales cycle as you have a Next Action for this contact')
+    expect(closed_contact['sales_closed_for']).to eq([])
 
   end
 
@@ -198,20 +198,20 @@ describe 'Test Actions', :pending => false do
                 'status' => 'asap',
                 'done' => true })
     updated_action = samples.put("actions/#{action_id}.json", action )
-    updated_action['status'].should be 0
+    expect(updated_action['status']).to eq(0)
   end
 
   it 'should close the sales cycle' do
     samples.put("contacts/#{ne_contact_id}/close_sales_cycle.json", 'comment' => 'close this')
     closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
-    closed_contact['sales_closed_for'].should be == [samples.return_uid]
+    expect(closed_contact['sales_closed_for']).to eq([samples.return_uid])
 
   end
 
   it 'should reopen the sales cycle' do
     samples.put("contacts/#{ne_contact_id}/reopen_sales_cycle.json", 'comment' => 'nil' )
     closed_contact = samples.get("contacts/#{ne_contact_id}.json")['data']['contact']
-    closed_contact['sales_closed_for'].should be == []
+    expect(closed_contact['sales_closed_for']).to eq([])
 
   end
 end
@@ -282,11 +282,11 @@ describe 'Test change auth key and logout' do
     orig_auth_key = samples.bootstrap['data']['auth_key']
     samples.change_auth_key
     new_auth_key = samples.bootstrap['data']['auth_key']
-    orig_auth_key.should_not be == new_auth_key
+    expect(orig_auth_key).not_to eq(new_auth_key)
   end
 
   it 'should log us out' do
-    samples.logout['status'].should == 0
+    expect(samples.logout['status']).to eq(0)
   end
 
 end

@@ -1,6 +1,5 @@
 source 'http://rubygems.org'
 
-gem 'ZenTest'
-gem 'autotest'
+gem 'rspec'
 gem 'rspec-autotest'
-gem 'json_spec'
+gem 'json_rspec'
