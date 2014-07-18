@@ -27,6 +27,10 @@ class OnePageAPISamples
     @api_key = Base64::decode64(auth_data['data']['auth_key'])
   end
 
+  def return_uid
+    @uid
+  end
+
   def bootstrap
     get('bootstrap.json')
   end
@@ -69,6 +73,10 @@ class OnePageAPISamples
   # Delete contact
   def delete_contact(id)
     delete("contacts/#{id}.json")
+  end
+
+  def create_action(id, action_data)
+    post("contacts/#{id}/actions.json", action_data)
   end
 
 
@@ -146,10 +154,10 @@ class OnePageAPISamples
     return if @uid.nil? || @api_key.nil?
 
     url_to_sign = @url + api_method
-    params_to_sign = params.empty? ? nil : 
-    params.to_a.map {|x| x[0] + '=' + URI::escape(x[1].to_s, Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
+    params_to_sign = params.empty? ? nil : URI.encode_www_form(params)
     url_to_sign += '?' + params_to_sign unless params_to_sign.nil? || ['POST', 'PUT'].include?(http_method)
 
+    # puts url_to_sign
     timestamp = Time.now.to_i.to_s
 
     token = create_signature(@uid, @api_key, timestamp, http_method, url_to_sign, params)
@@ -161,6 +169,7 @@ class OnePageAPISamples
 
 
   def create_signature(uid, api_key, timestamp, request_type, request_url, request_body)
+
     request_url_hash = Digest::SHA1.hexdigest request_url
     request_body_hash = Digest::SHA1.hexdigest request_body.to_json
     signature_message = [uid, timestamp, request_type.upcase, request_url_hash].join '.'

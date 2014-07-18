@@ -1,0 +1,18 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    ZenTest (4.10.0)
+    autotest (4.4.6)
+      ZenTest (>= 4.4.1)
+    rspec-autotest (1.0.0)
+      rspec-core (>= 2.99.0.beta1, < 4.0.0)
+    rspec-core (3.0.0)
+      rspec-support (~> 3.0.0)
+    rspec-support (3.0.0)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  autotest
+  rspec-autotest
