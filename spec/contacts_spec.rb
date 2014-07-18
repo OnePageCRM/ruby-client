@@ -43,6 +43,32 @@ describe 'Create contact', :pending => false do
     expect(address['state']).to eq 'CA'
   end
 
+  it 'should create a new contact without an address' do
+    details_without_address = ({
+      'first_name' => 'yes',
+      'last_name' => 'address',
+      'company_name' => 'ACMEinc',
+      'starred' => false,
+      'tags' => %w(api_test1 api_test2),
+      'emails' => [{
+        'type' => 'work',
+        'value' => 'johnny@exammmple.com' }],
+      'background' => 'BACKGROUND',
+      'job_title' => 'JOBTITLE'
+    })
+
+    new_contact = samples.create_contact(details_without_address)
+    new_contact_id = new_contact['contact']['id']
+    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    expect(got_deets['first_name']).to eq(details_without_address['first_name'])
+
+    details_without_address.each do |k, v|
+      expect(got_deets[k]).to eq(details_without_address[k])
+    end
+
+
+  end
+
     it 'should not create a new contact because address_list is not formatted correctly' do
     new_contact_details = ({
       'first_name' => 'no',
