@@ -7,7 +7,7 @@ require 'json'
 
 class OnePageAPISamples
   def initialize(login, password)
-    @url = 'https://app.onepagecrm.com/api/v3/'
+    @url = 'http://localhost:3000/api/v3/'
     @login = login
     @password = password
   end
@@ -100,7 +100,7 @@ class OnePageAPISamples
     add_auth_headers(req, 'GET', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
+    # http.use_ssl = true
     result = http.request(req).body
     JSON.parse result
   end
@@ -114,7 +114,7 @@ class OnePageAPISamples
     add_auth_headers(req, 'POST', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
+    # http.use_ssl = true
     result = http.request(req).body
     JSON.parse result
   end
@@ -128,7 +128,7 @@ class OnePageAPISamples
     add_auth_headers(req, 'PUT', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
+    # http.use_ssl = true
     result = http.request(req).body
     JSON.parse result
   end
@@ -143,7 +143,7 @@ class OnePageAPISamples
     req = Net::HTTP::Delete.new(url.path + delete_data)
     add_auth_headers(req, 'DELETE', method, params)
     http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
+    # http.use_ssl = true
     result = http.request(req).body
     JSON.parse result
 
