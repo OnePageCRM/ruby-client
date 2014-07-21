@@ -20,6 +20,7 @@ describe 'Create contact', :pending => false do
         'value' => 'johnny@exammmple.com' }],
       'background' => 'BACKGROUND',
       'job_title' => 'JOBTITLE',
+      'status_id' => '53cd19121da4176a27000009',
       'address_list'=> [
         'city'=> 'San Francisco',
         'state'=> 'CA'
@@ -27,6 +28,7 @@ describe 'Create contact', :pending => false do
     })
 
     new_contact = samples.create_contact(new_contact_details)
+    puts new_contact
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
@@ -38,7 +40,7 @@ describe 'Create contact', :pending => false do
     end
 
     # check address
-    address = new_contact_details['address_list'][0]
+    address = got_deets['address_list'][0]
     expect(address['city']).to eq 'San Francisco'
     expect(address['state']).to eq 'CA'
   end
