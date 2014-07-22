@@ -7,7 +7,7 @@ require 'json'
 
 class OnePageAPISamples
   def initialize(login, password)
-    @url = 'http://localhost:3000/api/v3/'
+    @url = 'http://onepagecrm.local/api/v3/'
     @login = login
     @password = password
   end
