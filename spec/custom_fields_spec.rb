@@ -40,9 +40,9 @@ describe 'Check custom fields create and update' do
 
   end
 
-  it 'should create and update new contact with custom fields' do
+  it 'should create and update new contact with custom fields ruairis way' do
 
-    select_box_name = 'ABCD' #rand(36**8).to_s(36)
+    select_box_name = rand(36**8).to_s(36)
     new_cf = {
       'name' => select_box_name,
       'type' => 'select_box',
@@ -55,7 +55,7 @@ describe 'Check custom fields create and update' do
     response = samples.post('custom_fields.json', new_cf)
     cf_id = response['data']['custom_field']['id']
 
-    second_select_box_name = 'XYZ' #rand(36**8).to_s(36)
+    second_select_box_name = rand(36**8).to_s(36)
     second_new_cf = {
       'name' => second_select_box_name,
       'type' => 'select_box',
@@ -96,7 +96,6 @@ describe 'Check custom fields create and update' do
     })
 
     new_contact = samples.create_contact(new_contact_details)
-    ap new_contact
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
 
@@ -110,34 +109,81 @@ describe 'Check custom fields create and update' do
     expect(custom_fields[0]['value']).to eq 'B'
     expect(custom_fields[0]['custom_field']['id']).to eq cf_id
 
-# ap response
 
-#     updated_contact_details = ({
-#       'first_name' => 'Updated',
-#       'last_name' => 'CF',
-#       'company_name' => 'ACMEinc',
-#       'starred' => false,
-#       'tags' => %w(api_test1 api_test2),
-#       'emails' => [{
-#         'type' => 'work',
-#         'value' => 'johnny@exammmple.com' }],
-#       'background' => 'BACKGROUND',
-#       'job_title' => 'JOBTITLE',
-#       'custom_fields' => [
-#         'custom_field' => {
-#           'id' => cf_id 
-#         },
-#         'value' => 'A',
-#         'custom_field' => {
-#           'id' => second_cf_id
-#         },
-#         'value' => 'Z'
-#       ]
-#     })
+    # samples.delete("custom_fields/#{cf_id}.json")
+    # samples.delete("custom_fields/#{second_cf_id}.json")
 
-#     response = samples.put("contacts/#{new_contact_id}.json", updated_contact_details)
+  end
 
-#     ap response
+
+  it 'should create and update new contact with custom fields the sensible way' do
+
+    select_box_name = rand(36**8).to_s(36)
+    new_cf = {
+      'name' => select_box_name,
+      'type' => 'select_box',
+      'choices' => [
+        'A',
+        'B',
+        'C',
+        'D'
+      ]}
+    response = samples.post('custom_fields.json', new_cf)
+    cf_id = response['data']['custom_field']['id']
+
+    second_select_box_name = rand(36**8).to_s(36)
+    second_new_cf = {
+      'name' => second_select_box_name,
+      'type' => 'select_box',
+      'choices' => [
+        'X',
+        'Y',
+        'Z'
+      ]}
+
+    response = samples.post('custom_fields.json', second_new_cf)
+    second_cf_id = response['data']['custom_field']['id']
+
+    new_contact_details = ({
+      'first_name' => 'Johnny',
+      'last_name' => 'Deer',
+      'company_name' => 'ACMEinc',
+      'starred' => false,
+      'tags' => %w(api_test1 api_test2),
+      'emails' => [{
+        'type' => 'work',
+        'value' => 'johnny@exammmple.com' }],
+      'background' => 'BACKGROUND',
+      'job_title' => 'JOBTITLE',
+      'custom_fields' => [
+        {
+          'id' => cf_id,
+          'value' => 'B'
+        },
+        {
+          'id' => second_cf_id,
+          'value' => 'Y'
+        }
+      ]
+    })
+
+    response = samples.post('contacts.json', new_contact_details)
+    puts response
+    new_contact_id = response['data']['contact']['id']
+    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+
+    details_without_cfs = new_contact_details.reject { |k| k == 'custom_fields' }
+
+    details_without_cfs.each do |k, v|
+      expect(got_deets[k]).to eq(new_contact_details[k])
+    end
+
+    custom_fields = got_deets['custom_fields']
+    expect(custom_fields[0]['value']).to eq 'B'
+    expect(custom_fields[0]['custom_field']['id']).to eq cf_id
+
+    # samples.delete("custom_fields/#{cf_id}.json")
+    # samples.delete("custom_fields/#{second_cf_id}.json")
 
   end
 
