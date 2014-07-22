@@ -1,6 +1,7 @@
 require 'onepageapi'
 require 'json_spec'
 require 'pry'
+require 'awesome_print'
 api_login = 'peter@xap.ie' # put your login details here
 api_pass = 'p3t3r3t3p' # put your password here
 
@@ -39,9 +40,9 @@ describe 'Check custom fields create and update' do
 
   end
 
-  it 'should create a new contact with custom fields' do
+  it 'should create and update new contact with custom fields' do
 
-    select_box_name = rand(36**8).to_s(36)
+    select_box_name = 'ABCD' #rand(36**8).to_s(36)
     new_cf = {
       'name' => select_box_name,
       'type' => 'select_box',
@@ -51,10 +52,21 @@ describe 'Check custom fields create and update' do
         'C',
         'D'
       ]}
-
     response = samples.post('custom_fields.json', new_cf)
-    puts response
     cf_id = response['data']['custom_field']['id']
+
+    second_select_box_name = 'XYZ' #rand(36**8).to_s(36)
+    second_new_cf = {
+      'name' => second_select_box_name,
+      'type' => 'select_box',
+      'choices' => [
+        'X',
+        'Y',
+        'Z'
+      ]}
+
+    response = samples.post('custom_fields.json', second_new_cf)
+    second_cf_id = response['data']['custom_field']['id']
 
     new_contact_details = ({
       'first_name' => 'Johnny',
@@ -68,13 +80,23 @@ describe 'Check custom fields create and update' do
       'background' => 'BACKGROUND',
       'job_title' => 'JOBTITLE',
       'custom_fields' => [
-        'id' => cf_id,
-        'value' => 'B'
+        {       
+          'custom_field' => {
+            'id' => cf_id 
+          },
+          'value' => 'B'
+        },
+        {
+          'custom_field' => {
+            'id' => second_cf_id
+          },
+          'value' => 'Y'
+        }
       ]
     })
 
     new_contact = samples.create_contact(new_contact_details)
-    puts new_contact
+    ap new_contact
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
 
@@ -87,6 +109,35 @@ describe 'Check custom fields create and update' do
     custom_fields = got_deets['custom_fields']
     expect(custom_fields[0]['value']).to eq 'B'
     expect(custom_fields[0]['custom_field']['id']).to eq cf_id
+
+# ap response
+
+#     updated_contact_details = ({
+#       'first_name' => 'Updated',
+#       'last_name' => 'CF',
+#       'company_name' => 'ACMEinc',
+#       'starred' => false,
+#       'tags' => %w(api_test1 api_test2),
+#       'emails' => [{
+#         'type' => 'work',
+#         'value' => 'johnny@exammmple.com' }],
+#       'background' => 'BACKGROUND',
+#       'job_title' => 'JOBTITLE',
+#       'custom_fields' => [
+#         'custom_field' => {
+#           'id' => cf_id 
+#         },
+#         'value' => 'A',
+#         'custom_field' => {
+#           'id' => second_cf_id
+#         },
+#         'value' => 'Z'
+#       ]
+#     })
+
+#     response = samples.put("contacts/#{new_contact_id}.json", updated_contact_details)
+
+#     ap response
 
   end
 
