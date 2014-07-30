@@ -34,7 +34,6 @@ describe 'Create and update predefined actions' do
 
   it 'should not add a predefined action because text doesn\'t exist' do 
     response = samples.post('predefined_actions.json', 'days' => '1')
-    puts response
     expect(response['status']).to be 400
   end
 

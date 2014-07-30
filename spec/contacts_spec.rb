@@ -28,7 +28,6 @@ describe 'Create contact', :pending => false do
     })
 
     new_contact = samples.create_contact(new_contact_details)
-    puts new_contact
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
@@ -43,6 +42,9 @@ describe 'Create contact', :pending => false do
     address = got_deets['address_list'][0]
     expect(address['city']).to eq 'San Francisco'
     expect(address['state']).to eq 'CA'
+
+    # delete contact
+    samples.delete("contacts/#{new_contact_id}.json")
   end
 
   it 'should create a new contact without an address' do
@@ -68,7 +70,8 @@ describe 'Create contact', :pending => false do
       expect(got_deets[k]).to eq(details_without_address[k])
     end
 
-
+    # delete contact
+    samples.delete("contacts/#{new_contact_id}.json")
   end
 
     it 'should not create a new contact because address_list is not formatted correctly' do

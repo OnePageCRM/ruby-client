@@ -109,10 +109,8 @@ describe 'Check custom fields create and update' do
     expect(custom_fields[0]['value']).to eq 'B'
     expect(custom_fields[0]['custom_field']['id']).to eq cf_id
 
-
-    # samples.delete("custom_fields/#{cf_id}.json")
-    # samples.delete("custom_fields/#{second_cf_id}.json")
-
+    samples.delete("custom_fields/#{cf_id}.json")
+    samples.delete("custom_fields/#{second_cf_id}.json")
   end
 
 
@@ -168,7 +166,6 @@ describe 'Check custom fields create and update' do
     })
 
     response = samples.post('contacts.json', new_contact_details)
-    puts response
     new_contact_id = response['data']['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
 
@@ -182,9 +179,8 @@ describe 'Check custom fields create and update' do
     expect(custom_fields[0]['value']).to eq 'B'
     expect(custom_fields[0]['custom_field']['id']).to eq cf_id
 
-    # samples.delete("custom_fields/#{cf_id}.json")
-    # samples.delete("custom_fields/#{second_cf_id}.json")
-
+    samples.delete("custom_fields/#{cf_id}.json")
+    samples.delete("custom_fields/#{second_cf_id}.json")
   end
 
 end

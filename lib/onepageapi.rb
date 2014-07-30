@@ -4,6 +4,7 @@ require 'net/http'
 require 'openssl'
 require 'base64'
 require 'json'
+require 'pry'
 
 class OnePageAPISamples
   def initialize(login, password)
@@ -22,8 +23,6 @@ class OnePageAPISamples
     auth_data = post('login.json', params)
     @uid = auth_data['data']['user_id']
 
-    # Returns User ID for reference
-    puts 'UID =  ' + @uid
     @api_key = Base64::decode64(auth_data['data']['auth_key'])
   end
 

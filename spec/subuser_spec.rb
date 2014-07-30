@@ -1,11 +1,14 @@
 require 'onepageapi'
 require 'json_spec'
+require 'pry'
+
+sub_login = 'peter+petersubuser@xap.ie'
+sub_pass = 'p3t3r3t3p'
+samples = OnePageAPISamples.new(sub_login, sub_pass)
+samples.login
 
 describe 'Test subuser' do
-  sub_login = 'peter+subuser@xap.ie'
-  sub_pass = 'p3t3r3t3p'
-  samples = OnePageAPISamples.new(sub_login, sub_pass)
-  samples.login
+  
   it 'should create a new contact owned by subuser' do
     new_contact_details = ({
       'first_name' => 'API',
@@ -20,8 +23,9 @@ describe 'Test subuser' do
       'job_title' => 'JOBTITLE'
     })
 
-    new_contact = samples.create_contact(new_contact_details)
-    new_contact_id = new_contact['contact']['id']
+    response = samples.post('contacts.json', new_contact_details)
+    new_contact = response['data']['contact']
+    new_contact_id = new_contact['id']
 
     owner_id = samples.get_contact_details(new_contact_id)['data']['contact']['owner_id']
 
@@ -29,7 +33,11 @@ describe 'Test subuser' do
 
   end
 
-  it 'should create a new contact owned by owner' do
+  it 'should create a new contact owned by manager' do
+
+    users = samples.get('users.json')
+    manager = users['data'].detect { |u|  u['user']['account_rights'] == [] }
+    manager_id = manager['user']['id']
 
    new_contact_details = ({
       'first_name' => 'API',
@@ -42,15 +50,16 @@ describe 'Test subuser' do
           'value' => 'johnny@subuser.com' }],
       'background' => 'BACKGROUND',
       'job_title' => 'JOBTITLE',
-      'owner_id' =>'5376256f1da41728a5000003'
+      'owner_id' => manager_id
     })
 
-    new_contact = samples.create_contact(new_contact_details)
-    new_contact_id = new_contact['contact']['id']
+    response = samples.post('contacts.json', new_contact_details)
+    new_contact = response['data']['contact']
+    new_contact_id = new_contact['id']
    
     owner_id = samples.get_contact_details(new_contact_id)['data']['contact']['owner_id']
 
-    expect(owner_id).to eq('5376256f1da41728a5000003')
+    expect(owner_id).to eq(manager_id)
 
   end
 end
