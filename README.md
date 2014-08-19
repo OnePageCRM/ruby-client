@@ -22,3 +22,11 @@ It only contains a small subsection of calls and functions available using the A
 - Run the different commands - for example:
     > samples.bootstrap
     > samples.get_contacts
+
+## Rspec
+To run the rspec tests:
+
+- change the username and password in each spec file from `peter@xap.ie` and `password` to your account
+- change the @url variable to your local machine if you are testing locally
+- run `rspec` to run all the tests
+- run `rspec spec/actions_spec.rb` to just run the `actions` test 
