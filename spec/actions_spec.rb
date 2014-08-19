@@ -50,9 +50,11 @@ describe 'Test Actions' do
                 'text' => 'action_text',
                 'status' => 'asap' })
 
-    created_action = samples.create_action(@new_contact_id, action)
-    action_id = created_action['data']['action']['id']
-    expect(created_action['status']).to be 0
+    response = samples.post('actions.json', action)
+
+    created_action = response['data']['action']
+    action_id = created_action['id']
+    expect(response['status']).to be 0
 
     got_action = samples.get("actions/#{action_id}.json")['data']['action']
     action.each do |k, v|

@@ -1,5 +1,7 @@
 source 'http://rubygems.org'
 
+gem 'guard'
+gem 'guard-shell'
 gem 'rspec'
-gem 'rspec-autotest'
-gem 'json_rspec'
+gem 'json_spec'
+gem 'pry'

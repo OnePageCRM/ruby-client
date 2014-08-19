@@ -8,7 +8,7 @@ describe 'Create contact and change its type', :pending => false do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
 
-  it 'should create a new contact of company type' do
+  it 'should create and update a new contact of company type' do
     new_contact_details = ({
       'first_name' => 'Contact',
       'last_name' => 'Type',
@@ -29,7 +29,8 @@ describe 'Create contact and change its type', :pending => false do
       'first_name' => 'Individual',
       'last_name' => 'Type',
       'company_name' => 'IndividualType',
-      'type' => 'individual'
+      'type' => 'individual',
+      'partial' => 1
     })
 
     response = samples.put("contacts/#{new_contact_id}.json",
@@ -45,7 +46,8 @@ describe 'Create contact and change its type', :pending => false do
       'first_name' => 'Company',
       'last_name' => 'Type',
       'company_name' => 'CompanyType',
-      'type' => 'company'
+      'type' => 'company',
+      'partial' => 1
     })
 
     response = samples.put("contacts/#{new_contact_id}.json", update_contact_to_company_type)

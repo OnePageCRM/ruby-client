@@ -23,16 +23,18 @@ describe 'Create and update status' do
 
     new_number_of_statuses = samples.get('statuses.json')['data'].count
     expect(new_number_of_statuses).to be number_of_statuses + 1
+
+    samples.delete("statuses/#{response['status']['id']}.json")
   end
 
   it 'should have not added a status as no text param' do
     number_of_statuses = samples.get('statuses.json')['data'].count
     response = samples.post('statuses.json', 'name' => 'name' + status_text)
     expect(response['status']).to be 400
-    # expect(response['message']).to eq 'Invalid request data'
-    # expect(response['error_name']).to eq 'invalid_request_data'
-    # expect(response['error_message']).to eq 'A validation error has occurred'
-    # expect(response['errors']['text']).to eq "Can't create a status text with an empty string"
+    expect(response['message']).to eq 'Invalid request data'
+    expect(response['error_name']).to eq 'invalid_request_data'
+    expect(response['error_message']).to eq 'A validation error has occurred'
+    expect(response['errors']['text']).to eq "Can't create a status text with an empty string"
     new_number_of_statuses = samples.get('statuses.json')['data'].count
     expect(new_number_of_statuses).to be number_of_statuses
   end
@@ -67,9 +69,6 @@ describe 'Create and update status' do
     expect(response['message']).to eq 'Incomplete request data'
     expect(response['error_name']).to eq 'incomplete_request_data'
     expect(response['error_message']).to eq "Can't get data for a single status without a status id"
-    # response['errors'] should look something like below:
-    # {"id"=>
-    #  "'53c507c31da4171a760000981' is not valid. Valid options are [\"53c4f0aa1da4171a76000017\", \"53c4f6c71da4171a7600004a\", \"53c4f7181da4171a7600004c\", \"53c4f83a1da4171a7600004e\", \"53c4f8591da4171a76000050\", \"53c4fe671da4171a76000052\", \"53c4ff431da4171a76000054\", \"53c4ff781da4171a76000056\", \"53c4fff61da4171a76000058\", \"53c500191da4171a7600005a\", \"53c506261da4171a7600008b\", \"53c506561da4171a7600008d\", \"53c506721da4171a7600008f\", \"53c506ab1da4171a76000091\", \"53c507c31da4171a76000098\", \"53c507ef1da4171a7600009a\"]"}
     new_number_of_statuses = samples.get('statuses.json')['data'].count
     expect(new_number_of_statuses).to eq number_of_statuses
   end

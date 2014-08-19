@@ -9,6 +9,11 @@ require 'pry'
 class OnePageAPISamples
   def initialize(login, password)
     @url = 'http://onepagecrm.local/api/v3/'
+    if @url == 'https://app.onepagecrm.com/api/v3/'
+      @use_ssl = true
+    else
+      @use_ssl = false
+    end
     @login = login
     @password = password
   end
@@ -88,12 +93,14 @@ class OnePageAPISamples
     url = URI.parse(@url + method)
     get_data = params.empty? ? '' : '?' + params.to_a.map {|x| x[0] + '=' +
     URI::escape(x[1], Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
+    
 
-    req = Net::HTTP::Get.new(url.path + get_data)
+    req = Net::HTTP::Get.new(url.request_uri)
+
     add_auth_headers(req, 'GET', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
-    # http.use_ssl = true
+    http.use_ssl = @use_ssl
     result = http.request(req).body
     JSON.parse result
   end
@@ -107,7 +114,7 @@ class OnePageAPISamples
     add_auth_headers(req, 'POST', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
-    # http.use_ssl = true
+    http.use_ssl = @use_ssl
     result = http.request(req).body
     JSON.parse result
   end
@@ -121,7 +128,7 @@ class OnePageAPISamples
     add_auth_headers(req, 'PUT', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
-    # http.use_ssl = true
+    http.use_ssl = @use_ssl
     result = http.request(req).body
     JSON.parse result
   end
@@ -136,7 +143,7 @@ class OnePageAPISamples
     req = Net::HTTP::Delete.new(url.path + delete_data)
     add_auth_headers(req, 'DELETE', method, params)
     http = Net::HTTP.new(url.host, url.port)
-    # http.use_ssl = true
+    http.use_ssl = @use_ssl
     result = http.request(req).body
     JSON.parse result
 
