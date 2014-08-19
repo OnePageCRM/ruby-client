@@ -30,3 +30,5 @@ To run the rspec tests:
 - change the @url variable to your local machine if you are testing locally
 - run `rspec` to run all the tests
 - run `rspec spec/actions_spec.rb` to just run the `actions` test 
+
+## Feel free to edit this test suite. There is an issue tracker attached to this repository if needed to discuss issues. (no need to use youtrack for this I think).
