@@ -3,7 +3,7 @@ require 'json_spec'
 require 'pry'
 
 api_login = 'peter@xap.ie' # put your login details here
-api_pass = 'p3t3r3t3p' # put your password here
+api_pass = 'password' # put your password here
 
 samples = OnePageAPISamples.new(api_login, api_pass)
 samples.login
