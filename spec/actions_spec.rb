@@ -1,12 +1,10 @@
 require 'onepageapi'
 require 'json_spec'
-# config = YAML.load_file('../secrets.yml')
 
 api_login = 'peter+apitest@xap.ie' # put your login details here
 api_pass = 'devteam apitest 5' # put your password here
 samples = OnePageAPISamples.new(api_login, api_pass)
 samples.login
-
 
 describe 'Test Actions' do
 
