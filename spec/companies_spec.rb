@@ -1,14 +1,13 @@
 require 'onepageapi'
 require 'json_spec'
 
-api_login = 'peter@xap.ie' # put your login details here
-api_pass = 'password' # put your password here
+api_login = 'peter+apitest@xap.ie' # put your login details here
+api_pass = 'devteam apitest 5' # put your password here
 
 describe 'Update Company Name' do
   samples = OnePageAPISamples.new(api_login, api_pass)
   samples.login
   company_name = rand(36**8).to_s(36)
-
 
   new_contact_details = ({
     'first_name' => 'Johnny',
@@ -35,7 +34,6 @@ describe 'Update Company Name' do
     response = samples.put("companies/#{company_id}.json", 'name' => 'NEW_' + company_name)
     new_company_name = samples.get_contact_details(new_contact_id)['data']['contact']['company_name']
     second_new_company_name = samples.get_contact_details(second_new_contact_id)['data']['contact']['company_name']
-
     expect(new_company_name).to eq('NEW_' + company_name)
     expect(second_new_company_name).to eq('NEW_' + company_name)
   end

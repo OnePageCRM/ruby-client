@@ -2,8 +2,8 @@ require 'onepageapi'
 require 'json_spec'
 # config = YAML.load_file('../secrets.yml')
 
-api_login = 'peter@xap.ie' # put your login details here
-api_pass = 'password' # put your password here
+api_login = 'peter+apitest@xap.ie' # put your login details here
+api_pass = 'devteam apitest 5' # put your password here
 samples = OnePageAPISamples.new(api_login, api_pass)
 samples.login
 
@@ -74,7 +74,21 @@ describe 'Test Actions' do
 
   end
 
+  it 'should create an waiting for  action' do
+    action = ({ 'contact_id' => @new_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'waitin for action!',
+                'status' => 'waiting' })
 
+    created_action = samples.create_action(@new_contact_id, action)
+    action_id = created_action['data']['action']['id']
+    expect(created_action['status']).to be 0
+
+    got_action = samples.get("actions/#{action_id}.json")['data']['action']
+    action.each do |k, v|
+      expect(got_action[k]).to eq(action[k])
+    end
+  end
 
  it 'should not close the sales cycle as there is a N/A' do
     action = ({ 'contact_id' => @new_contact_id,
@@ -93,15 +107,34 @@ describe 'Test Actions' do
   it 'should complete a next action' do
     action = ({ 'contact_id' => @new_contact_id,
                 'assignee_id' => samples.return_uid,
-                'text' => 'updated text',
+                'text' => 'to be marked as done',
                 'status' => 'asap'
               })
     request = samples.post("contacts/#{@new_contact_id}/actions.json", action)
     action_id = request['data']['action']['id']
     updated_action = ({ 'done' => true,
                         'partial' => 1 })
-    updated_action = samples.put("actions/#{action_id}.json", action )
+    updated_action = samples.put("actions/#{action_id}.json", updated_action )
     expect(updated_action['status']).to eq(0)
+    expect(updated_action['data']['action']['done_at']).to_not be nil
+    request = samples.get("contacts/#{@new_contact_id}.json?fields=next_action(all)")
+    expect(request['data']['next_action']).to eq({})
+  end
+
+  it 'should complete a next action with mark_as_done' do
+    action = ({ 'contact_id' => @new_contact_id,
+                'assignee_id' => samples.return_uid,
+                'text' => 'updated text',
+                'status' => 'asap'
+              })
+    request = samples.post("contacts/#{@new_contact_id}/actions.json", action)
+    action_id = request['data']['action']['id']
+    updated_action = samples.put("actions/#{action_id}/mark_as_done.json", {'' => nil} )
+    expect(updated_action['status']).to eq(0)
+    expect(updated_action['data']['action']['done_at']).to_not be nil
+    request = samples.get("contacts/#{@new_contact_id}.json?fields=next_action(all)")
+    expect(request['data']['next_action']).to eq({})
+
   end
 
   it 'should close the sales cycle' do

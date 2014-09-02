@@ -26,7 +26,7 @@ It only contains a small subsection of calls and functions available using the A
 ## Rspec
 To run the rspec tests:
 
-- change the username and password in each spec file from `peter@xap.ie` and `password` to your account
+- change the username and password in each spec file from `peter+apitest@xap.ie` and `devteam apitest 5` to your account
 - change the @url variable to your local machine if you are testing locally
 - run `rspec` to run all the tests
 - run `rspec spec/actions_spec.rb` to just run the `actions` test 

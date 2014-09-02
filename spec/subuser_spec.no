@@ -3,7 +3,7 @@ require 'json_spec'
 require 'pry'
 
 sub_login = 'peter+subuser@xap.ie'
-sub_pass = 'password'
+sub_pass = 'devteam apitest 5'
 samples = OnePageAPISamples.new(sub_login, sub_pass)
 samples.login
 
