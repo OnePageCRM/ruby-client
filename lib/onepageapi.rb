@@ -8,7 +8,7 @@ require 'pry'
 
 class OnePageAPISamples
   def initialize(login, password)
-    @url = 'http://onepagecrm.local/api/v3/'
+    @url = 'https://app.onepagecrm.com/api/v3/'
     if @url == 'https://app.onepagecrm.com/api/v3/'
       @use_ssl = true
     else
