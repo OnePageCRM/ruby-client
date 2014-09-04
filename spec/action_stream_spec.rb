@@ -45,7 +45,7 @@ describe 'Test Action Stream' do
 
     response = samples.get('action_stream.json')
     contacts = response['data']['contacts']
-    contact = contacts.first { |c| c['contact']['id'] == @new_contact_id }
+    contact = contacts.select { |c| c['contact']['id'] == @new_contact_id }[0]
     next_action = contact['next_action']
 
     
