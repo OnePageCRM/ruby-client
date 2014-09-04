@@ -36,18 +36,24 @@ describe 'Test Action Stream' do
     expect(created_action['status']).to be 0
 
     got_action = samples.get("actions/#{action_id}.json")['data']['action']
-    action.each do |k, v|
-      expect(got_action[k]).to eq(action[k])
-    end
+
+    expect(got_action['contact_id']).to eq(action['contact_id'])
+    expect(got_action['assignee_id']).to eq(action['assignee_id'])
+    expect(got_action['text']).to eq(action['text'])
+    expect(got_action['date']).to eq(action['date'])
+    expect(got_action['status']).to eq(action['status'])
 
     response = samples.get('action_stream.json')
     contacts = response['data']['contacts']
-    contact = contacts.first{ |c| c['contact']['id'] == @new_contact_id }
+    contact = contacts.first { |c| c['contact']['id'] == @new_contact_id }
     next_action = contact['next_action']
 
-    action.each do |k, v|
-      expect(next_action[k]).to eq(action[k])
-    end
+    
+    expect(next_action['text']).to eq(action['text'])
+    expect(next_action['date']).to eq(action['date'])
+    expect(next_action['status']).to eq(action['status'])
+    expect(next_action['contact_id']).to eq(action['contact_id'])
+    expect(next_action['assignee_id']).to eq(action['assignee_id'])
   end
 
 end
