@@ -2,11 +2,8 @@ require 'onepageapi'
 require 'json_spec'
 require 'pry'
 
-api_login = 'peter+apitest@xap.ie' # put your login details here
-api_pass = 'devteam apitest 5' # put your password here
-
 describe 'Check custom fields create and update' do
-  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples = OnePageAPISamples.new
   samples.login
 
   it 'custom_fields.json should return correct reminder_days for anniversary fields' do

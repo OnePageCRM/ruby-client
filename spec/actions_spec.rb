@@ -1,9 +1,7 @@
 require 'onepageapi'
 require 'json_spec'
 
-api_login = 'peter+apitest@xap.ie' # put your login details here
-api_pass = 'devteam apitest 5' # put your password here
-samples = OnePageAPISamples.new(api_login, api_pass)
+samples = OnePageAPISamples.new
 samples.login
 
 describe 'Test Actions' do
@@ -40,6 +38,7 @@ describe 'Test Actions' do
       expect(got_action[k]).to eq(action[k])
     end
   end
+
 
   it 'should create and update an asap action' do
 
@@ -148,4 +147,5 @@ describe 'Test Actions' do
     expect(closed_contact['sales_closed_for']).to eq([])
 
   end
+
 end

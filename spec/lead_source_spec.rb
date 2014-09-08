@@ -2,10 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 require 'pry'
 
-api_login = 'peter+apitest@xap.ie' # put your login details here
-api_pass = 'devteam apitest 5' # put your password here
-
-samples = OnePageAPISamples.new(api_login, api_pass)
+samples = OnePageAPISamples.new
 samples.login
 
 number_of_sources = samples.get('lead_sources.json')['data'].count

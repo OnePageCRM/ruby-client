@@ -4,16 +4,23 @@ require 'net/http'
 require 'openssl'
 require 'base64'
 require 'json'
+require 'yaml'
 require 'pry'
+require 'uri'
+
+TEST_CONFIG = YAML.load_file("#{File.dirname(__FILE__)}/../config/config.yml")
 
 class OnePageAPISamples
-  def initialize(login, password)
-    @url = 'http://onepagecrm.local/api/v3/'
-    if @url == 'https://app.onepagecrm.com/api/v3/'
+  def initialize(login = nil, password = nil)
+    @url = TEST_CONFIG['host']
+    scheme = URI.parse(@url).scheme
+    if scheme == 'https'
       @use_ssl = true
     else
       @use_ssl = false
     end
+    login ||= TEST_CONFIG['login']
+    password ||= TEST_CONFIG['password']
     @login = login
     @password = password
   end
@@ -66,7 +73,7 @@ class OnePageAPISamples
 
   # Create new contact
   def create_contact(contact_data)
-    post('contacts.json', contact_data)['data']
+    contacts = post('contacts.json', contact_data)['data']
   end
 
   # Update contact data

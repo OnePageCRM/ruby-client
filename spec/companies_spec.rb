@@ -1,11 +1,9 @@
 require 'onepageapi'
 require 'json_spec'
 
-api_login = 'peter+apitest@xap.ie' # put your login details here
-api_pass = 'devteam apitest 5' # put your password here
 
 describe 'Update Company Name' do
-  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples = OnePageAPISamples.new
   samples.login
   company_name = rand(36**8).to_s(36)
 

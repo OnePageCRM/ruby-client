@@ -1,9 +1,7 @@
 require 'onepageapi'
 require 'json_spec'
 
-api_login = 'peter+apitest@xap.ie' # put your login details here
-api_pass = 'devteam apitest 5' # put your password here
-samples = OnePageAPISamples.new(api_login, api_pass)
+samples = OnePageAPISamples.new
 samples.login
 
 describe 'Test Action Stream' do
@@ -48,7 +46,6 @@ describe 'Test Action Stream' do
     contact = contacts.select { |c| c['contact']['id'] == @new_contact_id }[0]
     next_action = contact['next_action']
 
-    
     expect(next_action['text']).to eq(action['text'])
     expect(next_action['date']).to eq(action['date'])
     expect(next_action['status']).to eq(action['status'])
