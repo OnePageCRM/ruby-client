@@ -1,0 +1,3 @@
+login: "ruairi+first@xap.ie"
+password: "Password?Goes?Here?Ok?"
+host: "http://localhost:3000/api/v3/" #'https://app.onepagecrm.com/api/v3/'
