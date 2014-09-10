@@ -42,10 +42,10 @@ describe 'Test Action Stream' do
     expect(got_action['status']).to eq(action['status'])
 
     response = samples.get('action_stream.json')
+
     contacts = response['data']['contacts']
     contact = contacts.select { |c| c['contact']['id'] == @new_contact_id }[0]
     next_action = contact['next_action']
-
     expect(next_action['text']).to eq(action['text'])
     expect(next_action['date']).to eq(action['date'])
     expect(next_action['status']).to eq(action['status'])
