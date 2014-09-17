@@ -33,7 +33,7 @@ describe 'Create contact' do
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
-    
+
     details_without_address = new_contact_details.reject { |k| k == 'address_list' }
 
     details_without_address.each do |k, v|
@@ -130,7 +130,7 @@ describe 'Create contact' do
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
-    
+
     details_without_address = new_contact_details.reject { |k| k == 'address_list' }
 
     details_without_address.each do |k, v|
@@ -161,7 +161,7 @@ describe 'Create contact' do
     updated_contact = samples.put("contacts/#{new_contact_id}.json", updated_contact_details)
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
-    
+
     details_without_address = new_contact_details.reject { |k| k == 'address_list' }
 
     details_without_address.each do |k, v|
@@ -178,6 +178,28 @@ describe 'Create contact' do
 
     # delete contact
     samples.delete("contacts/#{new_contact_id}.json")
+  end
+
+  it 'should update the popular countries list for a contact' do
+    new_contact_details = {
+      'last_name' => 'Popular Countries Test',
+      'address_list' => [{
+        'country_code' => 'IE'
+      }]
+    }
+    new_contact = samples.create_contact(new_contact_details)
+    popular_countries = samples.get('settings.json')['data']['popular_countries'].to_a
+    expect(popular_countries).to include 'IE'
+    update_data = { 'partial' => true,
+                    'address_list' => [{
+                      'country_code' => 'US'
+                  }] }
+    new_contact_id = new_contact['contact']['id']
+    samples.put("contacts/#{new_contact_id}.json", update_data)
+    popular_countries = samples.get('settings.json')['data']['popular_countries'].to_a
+    expect(popular_countries[0]).to include 'US'
+    samples.delete("contacts/#{new_contact_id}.json")
+
   end
 
 end

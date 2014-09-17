@@ -20,7 +20,7 @@ describe 'Test Actions' do
   after(:each) do
     samples.delete("contacts/#{@new_contact_id}.json")
   end
- 
+
   action_id = ''
   it 'should create an date action' do
     action = ({ 'contact_id' => @new_contact_id,
@@ -148,4 +148,14 @@ describe 'Test Actions' do
 
   end
 
+  it 'should fail gracefully with incorrect input' do
+    action = { 'contact_id' => nil, 'assignee_id' => nil,
+               'text' => '', 'status' => 'FAKE_STATUS' }
+    response = samples.post('actions.json', action)
+    expect(response['status']).to be(404)
+    action['contact_id'] = @new_contact_id
+    response = samples.post('actions.json', action)
+    expect(response['error_message']).to match(/validation/)
+    expect(response['errors'].keys).to include('text')
+  end
 end
