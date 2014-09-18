@@ -101,7 +101,6 @@ class OnePageAPISamples
     get_data = params.empty? ? '' : '?' + params.to_a.map {|x| x[0] + '=' +
     URI::escape(x[1], Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
     
-
     req = Net::HTTP::Get.new(url.request_uri)
 
     add_auth_headers(req, 'GET', method, params)
@@ -147,7 +146,7 @@ class OnePageAPISamples
     delete_data = params.empty? ? '' : '?' + params.to_a.map {|x| x[0] + '=' +
     URI::escape(x[1], Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
 
-    req = Net::HTTP::Delete.new(url.path + delete_data)
+    req = Net::HTTP::Delete.new(url.request_uri)
     add_auth_headers(req, 'DELETE', method, params)
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = @use_ssl
