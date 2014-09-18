@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 require 'pry'
 
-describe 'Check custom fields create and update' do
+describe 'Check custom fields create and update #' do
   samples = OnePageAPISamples.new
   samples.login
 
@@ -16,7 +16,6 @@ describe 'Check custom fields create and update' do
     expect(response['data']['custom_field']['reminder_days']).to be 2
     response = samples.get('custom_fields.json')
     cfs = response['data']['custom_fields']
-
     anniversary_cf = cfs.select { |cf| cf['custom_field']['id'] == cf_id }[0]
     expect(anniversary_cf['custom_field']['reminder_days']).to be 2
 
