@@ -41,8 +41,15 @@ describe 'Bootstrap endpoint' do
   end
 end
 
-# describe 'Test bootstrap endpoint with extra parameters' do
-#   response = samples.get('bootstrap.json?fields=countries')
-#   json_data = response['data'].to_json
+describe 'Test bootstrap endpoint with extra parameters', pending: true do
+  pending("Not sure if we should do this. Would add a lot of stuff to bootstrap response.
+   Will wait until Dimitri asks again.")
+  response = samples.get('bootstrap.json?fields=countries')
+  json_data = response['data'].to_json
 
-# end
+  it 'should have countries parameter in tags path' do
+    expect(json_data).to have_json_path 'countries'
+  end
+
+
+end
