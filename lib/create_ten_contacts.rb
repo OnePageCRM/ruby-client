@@ -1,7 +1,7 @@
 require '../lib/onepageapi'
 require 'faker'
 
-samples = OnePageAPISamples.new
+samples = OnePageAPI.new
 samples.login
 
 10.times do

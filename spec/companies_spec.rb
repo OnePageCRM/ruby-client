@@ -3,7 +3,7 @@ require 'json_spec'
 
 
 describe 'Update Company Name' do
-  samples = OnePageAPISamples.new
+  samples = OnePageAPI.new
   samples.login
   company_name = rand(36**8).to_s(36)
 

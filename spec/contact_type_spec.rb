@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 
 describe 'Create contact and change its type', :pending => false do
-  samples = OnePageAPISamples.new
+  samples = OnePageAPI.new
   samples.login
 
   it 'should create and update a new contact of company type' do

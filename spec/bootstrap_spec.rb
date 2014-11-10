@@ -1,7 +1,7 @@
 require 'onepageapi'
 require 'json_spec'
 
-samples = OnePageAPISamples.new
+samples = OnePageAPI.new
 samples.login
 describe 'Bootstrap endpoint' do
 

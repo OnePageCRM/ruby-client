@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 
 describe 'delete and undelete contacts' do
-  samples = OnePageAPISamples.new
+  samples = OnePageAPI.new
   samples.login
 
   it 'should delete and undo delete of two contacts' do

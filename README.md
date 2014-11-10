@@ -16,7 +16,7 @@ It only contains a small subsection of calls and functions available using the A
     > api_pass = 'youronpagepassword'
 
 - Create a new samples object and login
-    > samples = OnePageAPISamples.new(api_login, api_pass)
+    > samples = OnePageAPI.new(api_login, api_pass)
     > samples.login
 
 - Run the different commands - for example:

@@ -10,7 +10,7 @@ require 'uri'
 
 TEST_CONFIG = YAML.load_file("#{File.dirname(__FILE__)}/../config/config.yml")
 
-class OnePageAPISamples
+class OnePageAPI
   def initialize(login = nil, password = nil)
     @url = TEST_CONFIG['host']
     scheme = URI.parse(@url).scheme
@@ -117,6 +117,7 @@ class OnePageAPISamples
     req = Net::HTTP::Post.new(url.path)
     req.body = params.to_json
     req.add_field('Content-Type', 'application/json; charset=utf-8')
+
     add_auth_headers(req, 'POST', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
@@ -171,6 +172,8 @@ class OnePageAPISamples
     req.add_field('X-OnePageCRM-UID', @uid)
     req.add_field('X-OnePageCRM-TS', timestamp)
     req.add_field('X-OnePageCRM-Auth', token)
+    req.add_field('X-OnePageCRM-Source', 'lead_clip_chrome')
+
   end
 
 

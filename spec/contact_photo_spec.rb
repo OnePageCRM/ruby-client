@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 require 'base64'
 
-samples = OnePageAPISamples.new
+samples = OnePageAPI.new
 samples.login
 
 describe 'Contact Photo' do

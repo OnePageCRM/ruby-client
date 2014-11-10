@@ -3,7 +3,7 @@ require 'json_spec'
 require 'pry'
 
 describe 'Create and update predefined actions' do 
-  samples = OnePageAPISamples.new
+  samples = OnePageAPI.new
   samples.login
 
   it 'should return predefined actions' do

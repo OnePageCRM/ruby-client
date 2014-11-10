@@ -6,7 +6,7 @@ api_pass = 'devteam apitest 5' # put your password here
 
 describe 'Test change auth key and logout', :pending => true do
 
-  samples = OnePageAPISamples.new(api_login, api_pass)
+  samples = OnePageAPI.new(api_login, api_pass)
   samples.login
   it 'should change auth key' do
     orig_auth_key = samples.bootstrap['data']['auth_key']

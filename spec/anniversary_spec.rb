@@ -3,7 +3,7 @@ require 'json_spec'
 require 'pry'
 
 describe 'Check custom fields create and update #' do
-  samples = OnePageAPISamples.new
+  samples = OnePageAPI.new
   samples.login
 
   it 'custom_fields.json should return correct reminder_days for anniversary fields' do

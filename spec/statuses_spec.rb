@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 require 'pry'
 
-samples = OnePageAPISamples.new
+samples = OnePageAPI.new
 samples.login
 
 status_text = rand(36**8).to_s(36)

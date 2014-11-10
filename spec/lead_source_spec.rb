@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 require 'pry'
 
-samples = OnePageAPISamples.new
+samples = OnePageAPI.new
 samples.login
 
 number_of_sources = samples.get('lead_sources.json')['data'].count

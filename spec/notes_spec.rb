@@ -2,7 +2,7 @@ require 'onepageapi'
 require 'json_spec'
 
 describe 'Check contact notes sorted correctly' do
-  samples = OnePageAPISamples.new
+  samples = OnePageAPI.new
   samples.login
 
   it 'notes should be sorted by creation date, newest first' do
