@@ -1,5 +1,6 @@
 require 'onepageapi'
 require 'json_spec'
+require 'awesome_print'
 
 describe 'Create contact' do
   samples = OnePageAPI.new
@@ -125,8 +126,20 @@ describe 'Create contact' do
         'country_code' => 'AO'
       ]
     })
-
+    cs = samples.get('contacts.json')
+    before_count = cs['data']['total_count']
+    tags = samples.get('tags.json')
+    ap tags['data']['tags']
+    t1 = Time.now
     new_contact = samples.create_contact(new_contact_details)
+    ap "#{Time.now - t1}"
+
+    cs = samples.get('contacts.json')
+    after_count = cs['data']['total_count']
+    # expect(after_count).to eq before_count + 1
+    tags = samples.get('tags.json')
+    ap tags['data']['tags']
+
     new_contact_id = new_contact['contact']['id']
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
@@ -158,7 +171,10 @@ describe 'Create contact' do
       ]
     })
 
+    t1 = Time.now
     updated_contact = samples.put("contacts/#{new_contact_id}.json", updated_contact_details)
+    puts "#{Time.now - t1}"
+
     got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
 
