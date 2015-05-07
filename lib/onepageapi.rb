@@ -28,8 +28,8 @@ class OnePageAPI
   # Login user into API
   def login
     params = {
-      login: @login,
-      password: @password
+        :login => @login,
+        :password => @password
     }
 
     auth_data = post('login.json', params)
@@ -73,7 +73,7 @@ class OnePageAPI
 
   # Create new contact
   def create_contact(contact_data)
-    contacts = post('contacts.json', contact_data)['data']
+    post('contacts.json', contact_data)['data']
   end
 
   # Update contact data
@@ -98,9 +98,6 @@ class OnePageAPI
   # Send GET request
   def get(method, params = {})
     url = URI.parse(@url + method)
-    get_data = params.empty? ? '' : '?' + params.to_a.map {|x| x[0] + '=' +
-    URI::escape(x[1], Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
-    
     req = Net::HTTP::Get.new(url.request_uri)
 
     add_auth_headers(req, 'GET', method, params)
@@ -144,9 +141,6 @@ class OnePageAPI
   def delete(method, params = {})
     url = URI.parse(@url + method)
 
-    delete_data = params.empty? ? '' : '?' + params.to_a.map {|x| x[0] + '=' +
-    URI::escape(x[1], Regexp.new("[^#{URI::PATTERN::UNRESERVED}]"))}.join('&').gsub(/%[0-9A-Fa-f]{2}/) {|x| x.downcase}
-
     req = Net::HTTP::Delete.new(url.request_uri)
     add_auth_headers(req, 'DELETE', method, params)
     http = Net::HTTP.new(url.host, url.port)
@@ -161,10 +155,8 @@ class OnePageAPI
     return if @uid.nil? || @api_key.nil?
 
     url_to_sign = @url + api_method
-    params_to_sign = params.empty? ? nil : URI.encode_www_form(params)
-    url_to_sign += '?' + params_to_sign unless params_to_sign.nil? || ['POST', 'PUT'].include?(http_method)
+    url_to_sign += '?' + URI.encode_www_form(params) if params.any? && %w{GET DELETE}.include?(http_method)
 
-    # puts url_to_sign
     timestamp = Time.now.to_i.to_s
 
     token = create_signature(@uid, @api_key, timestamp, http_method, url_to_sign, params)
@@ -172,19 +164,18 @@ class OnePageAPI
     req.add_field('X-OnePageCRM-UID', @uid)
     req.add_field('X-OnePageCRM-TS', timestamp)
     req.add_field('X-OnePageCRM-Auth', token)
-    req.add_field('X-OnePageCRM-Source', 'lead_clip_chrome')
-
   end
 
 
   def create_signature(uid, api_key, timestamp, request_type, request_url, request_body)
+    signature_data = [
+        uid,
+        timestamp,
+        request_type.upcase,
+        Digest::SHA1.hexdigest(request_url)
+    ]
+    signature_data.push(Digest::SHA1.hexdigest(request_body.to_json)) if %w{POST PUT}.include?(request_type)
 
-    request_url_hash = Digest::SHA1.hexdigest request_url
-    request_body_hash = Digest::SHA1.hexdigest request_body.to_json
-    signature_message = [uid, timestamp, request_type.upcase, request_url_hash].join '.'
-    signature_message += ('.' + request_body_hash) unless request_body.empty?
-    OpenSSL::HMAC.hexdigest('sha256', api_key, signature_message).to_s
+    OpenSSL::HMAC.hexdigest('sha256', api_key, signature_data.join('.'))
   end
-
-
 end
