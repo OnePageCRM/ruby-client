@@ -7,18 +7,19 @@ It only contains a small subsection of calls and functions available using the A
 
 - Clone the repository and cd into the directory
 
-- copy the config/config_orig.yml file to config/config.yml and add your OnePageCRM login and password.
+- copy the config/config_sample.yml file to config/config.yml and add your OnePageCRM user_id and api_key.
 
-- Start irb and require the lib/onpageapi file
-    $ irb
+- Start `irb` and require the lib/onpageapi file
     > require './lib/onepageapi'
 
-- Create a new samples object and login
-    > samples = OnePageAPI.new(api_login, api_pass)
-    > samples.login
+- Create a new client object
+    > client = OnePageAPI.new()
 
 - Run the different commands - for example:
-    > samples.get('bootstrap.json')
-    > samples.get('contacts.json')
-    > samples.post('contacts.json', contact_data)
-    > samples.put('contacts/#{contact_id}.json', updated_contact_data)
+    > client.get('bootstrap.json')
+
+    > client.get('contacts.json')
+
+    > client.post('contacts.json', contact_data)
+
+    > client.put('contacts/#{contact_id}.json', updated_contact_data)

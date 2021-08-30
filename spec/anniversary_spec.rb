@@ -1,25 +1,21 @@
-require 'onepageapi'
-require 'json_spec'
-require 'pry'
+require 'spec_helper'
 
 describe 'Check custom fields create and update #' do
-  samples = OnePageAPI.new
-  samples.login
 
   it 'custom_fields.json should return correct reminder_days for anniversary fields' do
     anniversary = 'anniversary_' + rand(36**8).to_s(36)
     new_cf = { 'name' => anniversary,
                'type' => 'anniversary',
                'reminder_days' => 2 }
-    response = samples.post('custom_fields.json', new_cf)
+    response = client.post('custom_fields.json', new_cf)
     cf_id = response['data']['custom_field']['id']
     expect(response['data']['custom_field']['reminder_days']).to be 2
-    response = samples.get('custom_fields.json')
+    response = client.get('custom_fields.json')
     cfs = response['data']['custom_fields']
     anniversary_cf = cfs.select { |cf| cf['custom_field']['id'] == cf_id }[0]
     expect(anniversary_cf['custom_field']['reminder_days']).to be 2
 
-    samples.delete("custom_fields/#{cf_id}.json")
+    client.delete("custom_fields/#{cf_id}.json")
 
   end
 
@@ -30,7 +26,7 @@ describe 'Check custom fields create and update #' do
     new_cf = { 'name' => anniversary,
                'type' => 'anniversary',
                'reminder_days' => 2 }
-    response = samples.post('custom_fields.json', new_cf)
+    response = client.post('custom_fields.json', new_cf)
     cf_id = response['data']['custom_field']['id']
     expect(response['data']['custom_field']['reminder_days']).to be 2
 
@@ -47,10 +43,10 @@ describe 'Check custom fields create and update #' do
       ]
     })
 
-    response = samples.post('contacts.json', new_contact_details)
+    response = client.post('contacts.json', new_contact_details)
     new_contact = response['data']['contact']
     new_contact_id = new_contact['id']
-    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    got_deets = client.get_contact_details(new_contact_id)['data']['contact']
 
     details_without_cfs = new_contact_details.reject { |k| k == 'custom_fields' }
 
@@ -62,10 +58,10 @@ describe 'Check custom fields create and update #' do
     expect(custom_fields[0]['value']).to eq '2014-02-06'
     expect(custom_fields[0]['custom_field']['id']).to eq cf_id
 
-    samples.delete("contacts/#{new_contact_id}.json")
+    client.delete("contacts/#{new_contact_id}.json")
 
-    samples.delete("custom_fields/#{cf_id}.json")
-    samples.delete("contact/#{new_contact_id}.json")
+    client.delete("custom_fields/#{cf_id}.json")
+    client.delete("contact/#{new_contact_id}.json")
   end
 
 
@@ -75,7 +71,7 @@ describe 'Check custom fields create and update #' do
     new_cf = { 'name' => anniversary,
                'type' => 'anniversary',
                'reminder_days' => 2 }
-    response = samples.post('custom_fields.json', new_cf)
+    response = client.post('custom_fields.json', new_cf)
     cf_id = response['data']['custom_field']['id']
     expect(response['data']['custom_field']['reminder_days']).to be 2
 
@@ -91,9 +87,9 @@ describe 'Check custom fields create and update #' do
       ]
     })
 
-    response = samples.post('contacts.json', new_contact_details)
+    response = client.post('contacts.json', new_contact_details)
     new_contact_id = response['data']['contact']['id']
-    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    got_deets = client.get_contact_details(new_contact_id)['data']['contact']
 
     details_without_cfs = new_contact_details.reject { |k| k == 'custom_fields' }
 
@@ -106,10 +102,10 @@ describe 'Check custom fields create and update #' do
     expect(custom_fields[0]['custom_field']['id']).to eq cf_id
 
 
-    samples.delete("contacts/#{new_contact_id}.json")
+    client.delete("contacts/#{new_contact_id}.json")
 
-    samples.delete("custom_fields/#{cf_id}.json")
-    samples.delete("contact/#{new_contact_id}.json")
+    client.delete("custom_fields/#{cf_id}.json")
+    client.delete("contact/#{new_contact_id}.json")
   end
 
   end
