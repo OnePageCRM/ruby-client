@@ -1,10 +1,6 @@
-require 'onepageapi'
-require 'json_spec'
-require 'awesome_print'
+require 'spec_helper'
 
 describe 'Create contact' do
-  samples = OnePageAPI.new
-  samples.login
 
   it 'should create a new contact' do
     new_contact_details = ({
@@ -30,9 +26,9 @@ describe 'Create contact' do
       ]
     })
 
-    new_contact = samples.create_contact(new_contact_details)
+    new_contact = client.create_contact(new_contact_details)
     new_contact_id = new_contact['contact']['id']
-    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    got_deets = client.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
 
     details_without_address = new_contact_details.reject { |k| k == 'address_list' }
@@ -47,7 +43,7 @@ describe 'Create contact' do
     expect(address['state']).to eq 'CA'
 
     # delete contact
-    samples.delete("contacts/#{new_contact_id}.json")
+    client.delete("contacts/#{new_contact_id}.json")
   end
 
   it 'should create a new contact without an address' do
@@ -64,9 +60,9 @@ describe 'Create contact' do
       'job_title' => 'JOBTITLE'
     })
 
-    new_contact = samples.create_contact(details_without_address)
+    new_contact = client.create_contact(details_without_address)
     new_contact_id = new_contact['contact']['id']
-    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    got_deets = client.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(details_without_address['first_name'])
 
     details_without_address.each do |k, v|
@@ -74,7 +70,7 @@ describe 'Create contact' do
     end
 
     # delete contact
-    samples.delete("contacts/#{new_contact_id}.json")
+    client.delete("contacts/#{new_contact_id}.json")
   end
 
     it 'should not create a new contact because address_list is not formatted correctly' do
@@ -95,7 +91,7 @@ describe 'Create contact' do
       }
     })
 
-    response = samples.post('contacts.json', new_contact_details)
+    response = client.post('contacts.json', new_contact_details)
     expect(response['status']).to be 400
   end
 
@@ -126,22 +122,19 @@ describe 'Create contact' do
         'country_code' => 'AO'
       ]
     })
-    cs = samples.get('contacts.json')
+    cs = client.get('contacts.json')
     before_count = cs['data']['total_count']
-    tags = samples.get('tags.json')
-    ap tags['data']['tags']
-    t1 = Time.now
-    new_contact = samples.create_contact(new_contact_details)
-    ap "#{Time.now - t1}"
+    tags = client.get('tags.json')
 
-    cs = samples.get('contacts.json')
+    new_contact = client.create_contact(new_contact_details)
+
+    cs = client.get('contacts.json')
     after_count = cs['data']['total_count']
     # expect(after_count).to eq before_count + 1
-    tags = samples.get('tags.json')
-    ap tags['data']['tags']
+    tags = client.get('tags.json')
 
     new_contact_id = new_contact['contact']['id']
-    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    got_deets = client.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
 
     details_without_address = new_contact_details.reject { |k| k == 'address_list' }
@@ -170,12 +163,10 @@ describe 'Create contact' do
         'country_code' => 'AE'
       ]
     })
+    
+    updated_contact = client.put("contacts/#{new_contact_id}.json", updated_contact_details)
 
-    t1 = Time.now
-    updated_contact = samples.put("contacts/#{new_contact_id}.json", updated_contact_details)
-    puts "#{Time.now - t1}"
-
-    got_deets = samples.get_contact_details(new_contact_id)['data']['contact']
+    got_deets = client.get_contact_details(new_contact_id)['data']['contact']
     expect(got_deets['first_name']).to eq(new_contact_details['first_name'])
 
     details_without_address = new_contact_details.reject { |k| k == 'address_list' }
@@ -193,7 +184,7 @@ describe 'Create contact' do
     expect(address['country_code']).to eq 'AE'
 
     # delete contact
-    samples.delete("contacts/#{new_contact_id}.json")
+    client.delete("contacts/#{new_contact_id}.json")
   end
 
   it 'should update the popular countries list for a contact' do
@@ -203,19 +194,18 @@ describe 'Create contact' do
         'country_code' => 'IE'
       }]
     }
-    new_contact = samples.create_contact(new_contact_details)
-    popular_countries = samples.get('settings.json')['data']['popular_countries'].to_a
+    new_contact = client.create_contact(new_contact_details)
+    popular_countries = client.get('settings.json')['data']['popular_countries'].to_a
     expect(popular_countries).to include 'IE'
     update_data = { 'partial' => true,
                     'address_list' => [{
                       'country_code' => 'US'
                   }] }
     new_contact_id = new_contact['contact']['id']
-    samples.put("contacts/#{new_contact_id}.json", update_data)
-    popular_countries = samples.get('settings.json')['data']['popular_countries'].to_a
+    client.put("contacts/#{new_contact_id}.json", update_data)
+    popular_countries = client.get('settings.json')['data']['popular_countries'].to_a
     expect(popular_countries[0]).to include 'US'
-    samples.delete("contacts/#{new_contact_id}.json")
-
+    client.delete("contacts/#{new_contact_id}.json")
   end
 
 end

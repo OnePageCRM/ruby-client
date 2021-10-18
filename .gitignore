@@ -1,4 +1,5 @@
 .rspec
 Gemfile.lock
-*~
 config.yml
+config/config.yml
+.idea

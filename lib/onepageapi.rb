@@ -8,38 +8,26 @@ require 'yaml'
 require 'pry'
 require 'uri'
 
-TEST_CONFIG = YAML.load_file("#{File.dirname(__FILE__)}/../config/config.yml")
+CONFIG_FILE = YAML.load_file("#{File.dirname(__FILE__)}/../config/config.yml")
 
 class OnePageAPI
-  def initialize(login = nil, password = nil)
-    @url = TEST_CONFIG['host']
-    scheme = URI.parse(@url).scheme
+  def initialize(user_id = nil, api_key = nil, host: nil)
+    host ||= CONFIG_FILE['host']
+    scheme = URI.parse(host).scheme
     if scheme == 'https'
       @use_ssl = true
     else
       @use_ssl = false
     end
-    login ||= TEST_CONFIG['login']
-    password ||= TEST_CONFIG['password']
-    @login = login
-    @password = password
-  end
-
-  # Login user into API
-  def login
-    params = {
-        :login => @login,
-        :password => @password
-    }
-
-    auth_data = post('login.json', params)
-    @uid = auth_data['data']['user_id']
-
-    @api_key = Base64::decode64(auth_data['data']['auth_key'])
+    user_id ||= CONFIG_FILE['user_id']
+    api_key ||= CONFIG_FILE['api_key']
+    @host = host
+    @user_id = user_id
+    @api_key = api_key
   end
 
   def return_uid
-    @uid
+    @user_id
   end
 
   def bootstrap
@@ -49,11 +37,6 @@ class OnePageAPI
   # Change API key
   def change_auth_key
     @api_key =  Base64::decode64(get('change_auth_key.json')['data']['auth_key'])
-  end
-
-  # Logout
-  def logout
-    get('logout.json')
   end
 
   # Get action stream
@@ -96,11 +79,10 @@ class OnePageAPI
   end
 
   # Send GET request
-  def get(method, params = {})
-    url = URI.parse(@url + method)
+  def get(endpoint, params = {})
+    url = URI.parse(@host + endpoint)
     req = Net::HTTP::Get.new(url.request_uri)
-
-    add_auth_headers(req, 'GET', method, params)
+    req.basic_auth @user_id, @api_key
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = @use_ssl
@@ -109,13 +91,12 @@ class OnePageAPI
   end
 
   # Send POST request
-  def post(method, params = {})
-    url = URI.parse(@url + method)
+  def post(endpoint, params = {})
+    url = URI.parse(@host + endpoint)
     req = Net::HTTP::Post.new(url.path)
+    req.basic_auth @user_id, @api_key
     req.body = params.to_json
     req.add_field('Content-Type', 'application/json; charset=utf-8')
-
-    add_auth_headers(req, 'POST', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = @use_ssl
@@ -124,12 +105,12 @@ class OnePageAPI
   end
 
   # Send PUT request
-  def put(method, params = {})
-    url = URI.parse(@url + method)
+  def put(endpoint, params = {})
+    url = URI.parse(@host + endpoint)
     req = Net::HTTP::Put.new(url.path)
+    req.basic_auth @user_id, @api_key
     req.body = params.to_json
     req.add_field('Content-Type', 'application/json; charset=utf-8')
-    add_auth_headers(req, 'PUT', method, params)
 
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = @use_ssl
@@ -138,44 +119,14 @@ class OnePageAPI
   end
 
   # Send DELETE request
-  def delete(method, params = {})
-    url = URI.parse(@url + method)
-
+  def delete(endpoint, params = {})
+    url = URI.parse(@host + endpoint)
     req = Net::HTTP::Delete.new(url.request_uri)
-    add_auth_headers(req, 'DELETE', method, params)
+    req.basic_auth @user_id, @api_key
+
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = @use_ssl
     result = http.request(req).body
     JSON.parse result
-
-  end
-
-   # Add authentication headers
-  def add_auth_headers(req, http_method, api_method, params)
-    return if @uid.nil? || @api_key.nil?
-
-    url_to_sign = @url + api_method
-    url_to_sign += '?' + URI.encode_www_form(params) if params.any? && %w{GET DELETE}.include?(http_method)
-
-    timestamp = Time.now.to_i.to_s
-
-    token = create_signature(@uid, @api_key, timestamp, http_method, url_to_sign, params)
-
-    req.add_field('X-OnePageCRM-UID', @uid)
-    req.add_field('X-OnePageCRM-TS', timestamp)
-    req.add_field('X-OnePageCRM-Auth', token)
-  end
-
-
-  def create_signature(uid, api_key, timestamp, request_type, request_url, request_body)
-    signature_data = [
-        uid,
-        timestamp,
-        request_type.upcase,
-        Digest::SHA1.hexdigest(request_url)
-    ]
-    signature_data.push(Digest::SHA1.hexdigest(request_body.to_json)) if %w{POST PUT}.include?(request_type)
-
-    OpenSSL::HMAC.hexdigest('sha256', api_key, signature_data.join('.'))
   end
 end
